@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Vault - Password Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                        'dark-lighter': '#1e293b',
+                        'dark-card': '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-dark via-slate-800 to-slate-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-dark-lighter/80 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-r from-primary to-secondary p-2 rounded-lg">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">Secure Vault</h1>
+                        <p class="text-xs text-slate-400">Password Generator</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-slate-400 hover:text-white transition-colors">Dashboard</a>
+                    <a href="passwords.html" class="text-slate-400 hover:text-white transition-colors">Passwords</a>
+                    <a href="generator.html" class="text-white font-medium">Generator</a>
+                    <a href="security.html" class="text-slate-400 hover:text-white transition-colors">Security</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="window.location.href='settings.html'" class="p-2 text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="logout()" class="text-red-400 hover:text-red-300 text-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="key" class="w-10 h-10 text-white"></i>
+            </div>
+            <h2 class="text-4xl font-bold text-white mb-4">Password Generator</h2>
+            <p class="text-slate-400 text-lg">Create strong, secure passwords for all your accounts</p>
+        </div>
+
+        <!-- Generated Password Display -->
+        <div class="bg-dark-card/50 backdrop-blur-sm rounded-3xl p-8 border border-slate-700/50 mb-8">
+            <div class="text-center mb-8">
+                <label class="block text-sm font-medium text-slate-300 mb-4">Generated Password</label>
+                <div class="bg-slate-800/50 rounded-2xl p-6 mb-6">
+                    <div class="flex items-center justify-between">
+                        <code id="generatedPassword" class="text-2xl font-mono text-green-400 break-all">Kx9#mP2!nQ7$vB8@</code>
+                        <button onclick="copyToClipboard()" class="ml-4 bg-green-600 hover:bg-green-700 text-white p-3 rounded-xl transition-colors">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Password Strength Indicator -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-slate-300">Password Strength</span>
+                        <span id="strengthText" class="text-sm text-green-400 font-medium">Very Strong</span>
+                    </div>
+                    <div class="flex space-x-1">
+                        <div id="strength1" class="h-2 flex-1 bg-green-500 rounded"></div>
+                        <div id="strength2" class="h-2 flex-1 bg-green-500 rounded"></div>
+                        <div id="strength3" class="h-2 flex-1 bg-green-500 rounded"></div>
+                        <div id="strength4" class="h-2 flex-1 bg-green-500 rounded"></div>
+                        <div id="strength5" class="h-2 flex-1 bg-slate-600 rounded"></div>
+                    </div>
+                </div>
+
+                <button onclick="generatePassword()" class="bg-gradient-to-r from-primary to-secondary text-white font-semibold py-4 px-8 rounded-2xl hover:opacity-90 transition-all transform hover:scale-[0.98]">
+                    <i data-lucide="refresh-cw" class="w-5 h-5 inline mr-2"></i>
+                    Generate New Password
+                </button>
+            </div>
+        </div>
+
+        <!-- Password Settings -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Length and Basic Settings -->
+            <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+                <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                    <i data-lucide="sliders" class="w-5 h-5 mr-2"></i>
+                    Password Length
+                </h3>
+                
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="text-slate-300">Length</label>
+                            <span id="lengthValue" class="text-white font-medium">16</span>
+                        </div>
+                        <input type="range" id="lengthSlider" min="4" max="50" value="16" 
+                               class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                               onchange="updateLength(this.value)">
+                        <div class="flex justify-between text-xs text-slate-500 mt-2">
+                            <span>4</span>
+                            <span>50</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-800/30 rounded-xl p-4 text-center">
+                            <p class="text-slate-400 text-sm mb-1">Minimum</p>
+                            <p class="text-white font-bold text-xl">8</p>
+                        </div>
+                        <div class="bg-slate-800/30 rounded-xl p-4 text-center">
+                            <p class="text-slate-400 text-sm mb-1">Recommended</p>
+                            <p class="text-green-400 font-bold text-xl">16+</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character Options -->
+            <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+                <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                    <i data-lucide="type" class="w-5 h-5 mr-2"></i>
+                    Character Types
+                </h3>
+                
+                <div class="space-y-4">
+                    <label class="flex items-center justify-between p-3 bg-slate-800/30 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="type" class="w-5 h-5 text-blue-400"></i>
+                            <div>
+                                <span class="text-white">Uppercase Letters</span>
+                                <p class="text-slate-400 text-sm">A-Z</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="uppercase" checked class="rounded border-slate-600 text-primary focus:ring-primary">
+                    </label>
+
+                    <label class="flex items-center justify-between p-3 bg-slate-800/30 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="type" class="w-5 h-5 text-green-400"></i>
+                            <div>
+                                <span class="text-white">Lowercase Letters</span>
+                                <p class="text-slate-400 text-sm">a-z</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="lowercase" checked class="rounded border-slate-600 text-primary focus:ring-primary">
+                    </label>
+
+                    <label class="flex items-center justify-between p-3 bg-slate-800/30 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="hash" class="w-5 h-5 text-yellow-400"></i>
+                            <div>
+                                <span class="text-white">Numbers</span>
+                                <p class="text-slate-400 text-sm">0-9</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="numbers" checked class="rounded border-slate-600 text-primary focus:ring-primary">
+                    </label>
+
+                    <label class="flex items-center justify-between p-3 bg-slate-800/30 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="at-sign" class="w-5 h-5 text-purple-400"></i>
+                            <div>
+                                <span class="text-white">Special Characters</span>
+                                <p class="text-slate-400 text-sm">!@#$%^&*</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="symbols" checked class="rounded border-slate-600 text-primary focus:ring-primary">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password History -->
+        <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+            <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                <i data-lucide="history" class="w-5 h-5 mr-2"></i>
+                Recently Generated
+            </h3>
+            
+            <div class="space-y-3" id="passwordHistory">
+                <div class="flex items-center justify-between p-4 bg-slate-800/30 rounded-xl">
+                    <code class="text-green-400 font-mono">Kx9#mP2!nQ7$vB8@</code>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-slate-400">2 min ago</span>
+                        <button onclick="copyHistoryPassword(this)" class="p-2 text-slate-400 hover:text-primary transition-colors">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-slate-800/30 rounded-xl">
+                    <code class="text-green-400 font-mono">Zm8&pL4!qR6#wE9$</code>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-slate-400">5 min ago</span>
+                        <button onclick="copyHistoryPassword(this)" class="p-2 text-slate-400 hover:text-primary transition-colors">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-slate-800/30 rounded-xl">
+                    <code class="text-green-400 font-mono">Nv7*sK3!dG8@mJ2#</code>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-slate-400">10 min ago</span>
+                        <button onclick="copyHistoryPassword(this)" class="p-2 text-slate-400 hover:text-primary transition-colors">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-dark-lighter/90 backdrop-blur-sm border-t border-slate-700/50">
+        <div class="flex items-center justify-around py-2">
+            <a href="dashboard.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="passwords.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="database" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Passwords</span>
+            </a>
+            <a href="generator.html" class="flex flex-col items-center py-2 px-4 text-primary">
+                <i data-lucide="key" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Generate</span>
+            </a>
+            <a href="security.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="shield" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Security</span>
+            </a>
+            <a href="settings.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Settings</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+
+        function updateLength(value) {
+            document.getElementById('lengthValue').textContent = value;
+            generatePassword();
+        }
+
+        function generatePassword() {
+            const length = parseInt(document.getElementById('lengthSlider').value);
+            const uppercase = document.getElementById('uppercase').checked;
+            const lowercase = document.getElementById('lowercase').checked;
+            const numbers = document.getElementById('numbers').checked;
+            const symbols = document.getElementById('symbols').checked;
+
+            let charset = '';
+            if (uppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (lowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (numbers) charset += '0123456789';
+            if (symbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+            if (charset === '') charset = 'abcdefghijklmnopqrstuvwxyz';
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+
+            document.getElementById('generatedPassword').textContent = password;
+            updateStrengthMeter(password);
+            addToHistory(password);
+        }
+
+        function updateStrengthMeter(password) {
+            let score = 0;
+            if (password.length >= 8) score++;
+            if (password.length >= 12) score++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+            if (/\d/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+
+            const strengthBars = ['strength1', 'strength2', 'strength3', 'strength4', 'strength5'];
+            const strengthText = document.getElementById('strengthText');
+            
+            // Reset all bars
+            strengthBars.forEach(bar => {
+                document.getElementById(bar).className = 'h-2 flex-1 bg-slate-600 rounded';
+            });
+
+            // Set active bars and text based on score
+            const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500', 'bg-green-600'];
+            const texts = ['Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
+            const textColors = ['text-red-400', 'text-orange-400', 'text-yellow-400', 'text-green-400', 'text-green-400'];
+
+            for (let i = 0; i < score; i++) {
+                document.getElementById(strengthBars[i]).className = `h-2 flex-1 ${colors[score-1]} rounded`;
+            }
+            
+            strengthText.textContent = texts[score-1] || 'Very Weak';
+            strengthText.className = `text-sm ${textColors[score-1] || 'text-red-400'} font-medium`;
+        }
+
+        function copyToClipboard() {
+            const password = document.getElementById('generatedPassword').textContent;
+            navigator.clipboard.writeText(password).then(() => {
+                // Show success feedback
+                const button = event.target.closest('button');
+                const icon = button.querySelector('i');
+                icon.setAttribute('data-lucide', 'check');
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    icon.setAttribute('data-lucide', 'copy');
+                    lucide.createIcons();
+                }, 1500);
+            });
+        }
+
+        function addToHistory(password) {
+            const historyContainer = document.getElementById('passwordHistory');
+            const historyItem = document.createElement('div');
+            historyItem.className = 'flex items-center justify-between p-4 bg-slate-800/30 rounded-xl';
+            historyItem.innerHTML = `
+                <code class="text-green-400 font-mono">${password}</code>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-slate-400">now</span>
+                    <button onclick="copyHistoryPassword(this)" class="p-2 text-slate-400 hover:text-primary transition-colors">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Add to beginning of history
+            historyContainer.insertBefore(historyItem, historyContainer.firstChild);
+            
+            // Keep only last 5 items
+            while (historyContainer.children.length > 5) {
+                historyContainer.removeChild(historyContainer.lastChild);
+            }
+            
+            lucide.createIcons();
+        }
+
+        function copyHistoryPassword(button) {
+            const password = button.closest('.flex').querySelector('code').textContent;
+            navigator.clipboard.writeText(password).then(() => {
+                const icon = button.querySelector('i');
+                icon.setAttribute('data-lucide', 'check');
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    icon.setAttribute('data-lucide', 'copy');
+                    lucide.createIcons();
+                }, 1500);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Generate initial password
+        generatePassword();
+    </script>
+</body>
+</html>
