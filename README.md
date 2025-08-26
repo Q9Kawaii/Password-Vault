@@ -35,7 +35,7 @@ A modern, responsive password management application built with HTML, CSS (Tailw
 
 ## 🚀 Demo
 
-Visit the live demo: [Secure Vault Demo](https://your-demo-url.com)
+Visit the live demo: [Secure Vault Demo]([https://your-demo-url.com](https://q9kawaii.github.io/Password-Vault/))
 
 ## 📱 Screenshots
 
