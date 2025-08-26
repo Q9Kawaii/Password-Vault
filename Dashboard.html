@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Vault - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        dark: '#0f172a',
+                        'dark-lighter': '#1e293b',
+                        'dark-card': '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-dark via-slate-800 to-slate-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-dark-lighter/80 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-r from-primary to-secondary p-2 rounded-lg">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">Secure Vault</h1>
+                        <p class="text-xs text-slate-400">Dashboard</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-white font-medium">Dashboard</a>
+                    <a href="passwords.html" class="text-slate-400 hover:text-white transition-colors">Passwords</a>
+                    <a href="generator.html" class="text-slate-400 hover:text-white transition-colors">Generator</a>
+                    <a href="security.html" class="text-slate-400 hover:text-white transition-colors">Security</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-slate-400 hover:text-white transition-colors relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                    </button>
+                    <button onclick="window.location.href='settings.html'" class="p-2 text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                    <div class="relative">
+                        <button onclick="toggleUserMenu()" class="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">U</span>
+                        </button>
+                        <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 bg-dark-card rounded-lg shadow-lg border border-slate-700">
+                            <a href="profile.html" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 rounded-t-lg">Profile</a>
+                            <a href="#" onclick="logout()" class="block px-4 py-2 text-red-400 hover:bg-slate-800 rounded-b-lg">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary rounded-3xl p-8 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Welcome Back!</h2>
+                        <p class="text-blue-100">You have 12 passwords stored securely</p>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
+                        <i data-lucide="shield" class="w-12 h-12"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-blue-500/20 p-3 rounded-lg">
+                        <i data-lucide="database" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-white">12</p>
+                        <p class="text-sm text-slate-400">Stored Passwords</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-green-500/20 p-3 rounded-lg">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-green-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-white">8</p>
+                        <p class="text-sm text-slate-400">Strong Passwords</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-yellow-500/20 p-3 rounded-lg">
+                        <i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-white">3</p>
+                        <p class="text-sm text-slate-400">Weak Passwords</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-red-500/20 p-3 rounded-lg">
+                        <i data-lucide="clock" class="w-6 h-6 text-red-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-white">1</p>
+                        <p class="text-sm text-slate-400">Expiring Soon</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <button onclick="window.location.href='passwords.html'" class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-primary/50 transition-all text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-primary/20 p-3 rounded-lg">
+                        <i data-lucide="plus" class="w-6 h-6 text-primary"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">Add Password</h3>
+                        <p class="text-sm text-slate-400">Store a new password</p>
+                    </div>
+                </div>
+            </button>
+
+            <button onclick="window.location.href='generator.html'" class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-green-500/50 transition-all text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-green-500/20 p-3 rounded-lg">
+                        <i data-lucide="key" class="w-6 h-6 text-green-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">Generate Password</h3>
+                        <p class="text-sm text-slate-400">Create secure passwords</p>
+                    </div>
+                </div>
+            </button>
+
+            <button onclick="window.location.href='security.html'" class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-orange-500/50 transition-all text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-orange-500/20 p-3 rounded-lg">
+                        <i data-lucide="scan" class="w-6 h-6 text-orange-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">Security Scan</h3>
+                        <p class="text-sm text-slate-400">Check password health</p>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-dark-card/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+            <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                <i data-lucide="activity" class="w-5 h-5 mr-2"></i>
+                Recent Activity
+            </h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span class="text-white">Gmail password updated</span>
+                    </div>
+                    <span class="text-slate-400 text-sm">2 hours ago</span>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                        <span class="text-white">New password added for Netflix</span>
+                    </div>
+                    <span class="text-slate-400 text-sm">1 day ago</span>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                        <span class="text-white">Security scan completed</span>
+                    </div>
+                    <span class="text-slate-400 text-sm">3 days ago</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-dark-lighter/90 backdrop-blur-sm border-t border-slate-700/50">
+        <div class="flex items-center justify-around py-2">
+            <a href="dashboard.html" class="flex flex-col items-center py-2 px-4 text-primary">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="passwords.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="database" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Passwords</span>
+            </a>
+            <a href="generator.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="key" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Generate</span>
+            </a>
+            <a href="security.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="shield" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Security</span>
+            </a>
+            <a href="settings.html" class="flex flex-col items-center py-2 px-4 text-slate-400">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Settings</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+
+        // Check if user is logged in
+        const user = localStorage.getItem('user');
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            const button = event.target.closest('button');
+            if (!button || !button.onclick || button.onclick.toString().indexOf('toggleUserMenu') === -1) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
